@@ -1,0 +1,16 @@
+[project]
+name = "AsyncFlow"
+version = "0.1.0"
+dependencies = [
+  "pytest",
+  "flake8",
+]
+requires-python = ">= 3.8"
+readme = "README.md"
+
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib",
+]
+pythonpath = "src"
+
