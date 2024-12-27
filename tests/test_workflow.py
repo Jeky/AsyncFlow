@@ -1,5 +1,5 @@
 import asyncio
-from asyncflow.workflow import Message, Metadata, Workflow
+from asyncflow.workflow import Message, Metadata, Step
 
 
 def test_workflow():
@@ -19,8 +19,8 @@ def test_workflow():
     X = Metadata('X', '1.0')
     Y = Metadata('Y', '1.0')
 
-    add_workflow = Workflow(add, [A, B], [X])
-    multiply_workflow = Workflow(multiply, [X, C], [Y])
+    add_step = Step(add, [A, B], [X])
+    multiply_step = Step(multiply, [X, C], [Y])
 
     a_to_add = asyncio.Queue()
     b_to_add = asyncio.Queue()
@@ -28,12 +28,12 @@ def test_workflow():
     c_to_multiply = asyncio.Queue()
     y_output = asyncio.Queue()
 
-    add_workflow.add_upstream(A, a_to_add)
-    add_workflow.add_upstream(B, b_to_add)
-    add_workflow.add_downstream(X, x_to_multiply)
-    multiply_workflow.add_upstream(X, x_to_multiply)
-    multiply_workflow.add_upstream(C, c_to_multiply)
-    multiply_workflow.add_downstream(Y, y_output)
+    add_step.add_upstream(A, a_to_add)
+    add_step.add_upstream(B, b_to_add)
+    add_step.add_downstream(X, x_to_multiply)
+    multiply_step.add_upstream(X, x_to_multiply)
+    multiply_step.add_upstream(C, c_to_multiply)
+    multiply_step.add_downstream(Y, y_output)
 
     async def run_workflow():
         await asyncio.gather(
@@ -41,8 +41,8 @@ def test_workflow():
             b_to_add.put(Message(B, 2)),
             c_to_multiply.put(Message(C, 3))
         )
-        await add_workflow()
-        await multiply_workflow()
+        await add_step()
+        await multiply_step()
         result = await y_output.get()
         assert result.payload == 9
 

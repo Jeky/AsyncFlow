@@ -15,7 +15,7 @@ class Message:
         self.payload = payload
 
 
-class Workflow:
+class Step:
     def __init__(self, task: Callable, consumes: List[Metadata], produces: List[Metadata] = None):
         self.task = task
         self.consumes = consumes
